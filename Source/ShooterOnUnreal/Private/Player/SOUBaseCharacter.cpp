@@ -4,9 +4,11 @@
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Components/SOUCharacterMovementComponent.h"
 
 // Sets default values
-ASOUBaseCharacter::ASOUBaseCharacter()
+ASOUBaseCharacter::ASOUBaseCharacter(const FObjectInitializer& ObjectInit)
+    : Super(ObjectInit.SetDefaultSubobjectClass<USOUCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
     // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
@@ -16,7 +18,7 @@ ASOUBaseCharacter::ASOUBaseCharacter()
     SpringArmComponent->bUsePawnControlRotation = true;
 
     CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
-    CameraComponent->SetupAttachment(SpringArmComponent)    ;
+    CameraComponent->SetupAttachment(SpringArmComponent);
 }
 
 // Called when the game starts or when spawned

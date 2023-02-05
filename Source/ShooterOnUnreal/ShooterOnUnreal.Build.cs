@@ -12,7 +12,7 @@ public class ShooterOnUnreal : ModuleRules
 
         PrivateDependencyModuleNames.AddRange(new string[] { });
 
-        PublicIncludePaths.AddRange(new string[] { "ShooterOnUnreal/Public/Player" });
+        PublicIncludePaths.AddRange(new string[] { "ShooterOnUnreal/Public/Player", "ShooterOnUnreal/Public/Components" });
 
         // Uncomment if you are using Slate UI
         // PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

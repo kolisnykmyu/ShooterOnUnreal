@@ -16,7 +16,7 @@ class SHOOTERONUNREAL_API ASOUBaseCharacter : public ACharacter
 
 public:
     // Sets default values for this character's properties
-    ASOUBaseCharacter();
+    ASOUBaseCharacter(const FObjectInitializer& ObjectInit);
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
