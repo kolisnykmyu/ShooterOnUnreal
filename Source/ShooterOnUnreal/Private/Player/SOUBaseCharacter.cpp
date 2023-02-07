@@ -51,24 +51,39 @@ void ASOUBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 void ASOUBaseCharacter::MoveForward(float Amount)
 {
     IsMovingForvard = Amount > 0.0f;
+    if (Amount == 0.0f)
+        return;
     AddMovementInput(GetActorForwardVector(), Amount);
 }
 
 void ASOUBaseCharacter::MoveRight(float Amount)
 {
+    if (Amount == 0.0f)
+        return;
     AddMovementInput(GetActorRightVector(), Amount);
 }
 
-void ASOUBaseCharacter::OnStartRunning() 
+void ASOUBaseCharacter::OnStartRunning()
 {
     WantsToRun = true;
 }
-void ASOUBaseCharacter::OnStopRunning() 
+void ASOUBaseCharacter::OnStopRunning()
 {
     WantsToRun = false;
 }
 
-bool ASOUBaseCharacter::IsRunning() const 
+bool ASOUBaseCharacter::IsRunning() const
 {
     return WantsToRun && IsMovingForvard && !GetVelocity().IsZero();
+}
+
+float ASOUBaseCharacter::GetMovementDirection() const
+{
+    if (GetVelocity().IsZero())
+        return 0.0f;
+    const auto VelocityNormal = GetVelocity().GetSafeNormal();
+    const auto AngleBetween = FMath::Acos(FVector::DotProduct(GetActorForwardVector(), VelocityNormal));
+    const auto CrossProduct = FVector::CrossProduct(GetActorForwardVector(), VelocityNormal);
+    const auto Degrees = FMath::RadiansToDegrees(AngleBetween);
+    return CrossProduct.IsZero() ? Degrees : Degrees * FMath::Sign(CrossProduct.Z);
 }
