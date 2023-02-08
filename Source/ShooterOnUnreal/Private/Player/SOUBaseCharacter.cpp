@@ -5,6 +5,8 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/SOUCharacterMovementComponent.h"
+#include "Components/SOUHealthComponent.h"
+#include "Components/TextRenderComponent.h"
 
 // Sets default values
 ASOUBaseCharacter::ASOUBaseCharacter(const FObjectInitializer& ObjectInit)
@@ -19,19 +21,29 @@ ASOUBaseCharacter::ASOUBaseCharacter(const FObjectInitializer& ObjectInit)
 
     CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
     CameraComponent->SetupAttachment(SpringArmComponent);
+
+    HealthComponent = CreateDefaultSubobject<USOUHealthComponent>("HealthComponent");
+
+    HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
+    HealthTextComponent->SetupAttachment(GetRootComponent());
 }
 
 // Called when the game starts or when spawned
 void ASOUBaseCharacter::BeginPlay()
 {
     Super::BeginPlay();
+
+    check(HealthComponent);
+    check(HealthTextComponent);
 }
 
 // Called every frame
 void ASOUBaseCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-    Super::Tick(DeltaTime);
+    
+    const auto Health = HealthComponent->GetHealth();
+    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 }
 
 // Called to bind functionality to input
