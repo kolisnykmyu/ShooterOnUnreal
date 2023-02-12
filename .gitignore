@@ -77,4 +77,5 @@ DerivedDataCache/*
 
 .vs/*
 .vscode/*
+ShooterOnUnreal.code-workspace
 .idea/*

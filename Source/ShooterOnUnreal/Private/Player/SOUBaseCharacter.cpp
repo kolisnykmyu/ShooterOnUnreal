@@ -8,9 +8,11 @@
 #include "Components/SOUHealthComponent.h"
 #include "Components/TextRenderComponent.h"
 
+DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All);
+
 // Sets default values
 ASOUBaseCharacter::ASOUBaseCharacter(const FObjectInitializer& ObjectInit)
-    : Super(ObjectInit.SetDefaultSubobjectClass<USOUCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
+    : Super(ObjectInit.SetDefaultSubobjectClass<USOUCharacterMovementComponent>(CharacterMovementComponentName))
 {
     // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
@@ -41,7 +43,7 @@ void ASOUBaseCharacter::BeginPlay()
 void ASOUBaseCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-    
+
     const auto Health = HealthComponent->GetHealth();
     HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 }
@@ -64,14 +66,18 @@ void ASOUBaseCharacter::MoveForward(float Amount)
 {
     IsMovingForvard = Amount > 0.0f;
     if (Amount == 0.0f)
+    {
         return;
+    }
     AddMovementInput(GetActorForwardVector(), Amount);
 }
 
 void ASOUBaseCharacter::MoveRight(float Amount)
 {
     if (Amount == 0.0f)
+    {
         return;
+    }
     AddMovementInput(GetActorRightVector(), Amount);
 }
 
@@ -79,6 +85,7 @@ void ASOUBaseCharacter::OnStartRunning()
 {
     WantsToRun = true;
 }
+
 void ASOUBaseCharacter::OnStopRunning()
 {
     WantsToRun = false;
@@ -92,7 +99,9 @@ bool ASOUBaseCharacter::IsRunning() const
 float ASOUBaseCharacter::GetMovementDirection() const
 {
     if (GetVelocity().IsZero())
+    {
         return 0.0f;
+    }
     const auto VelocityNormal = GetVelocity().GetSafeNormal();
     const auto AngleBetween = FMath::Acos(FVector::DotProduct(GetActorForwardVector(), VelocityNormal));
     const auto CrossProduct = FVector::CrossProduct(GetActorForwardVector(), VelocityNormal);
