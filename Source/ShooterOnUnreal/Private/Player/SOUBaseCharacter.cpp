@@ -8,7 +8,7 @@
 #include "Components/SOUHealthComponent.h"
 #include "Components/TextRenderComponent.h"
 
-DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All);
+DEFINE_LOG_CATEGORY_STATIC(LogBaseCharacter, All, All);
 
 // Sets default values
 ASOUBaseCharacter::ASOUBaseCharacter(const FObjectInitializer& ObjectInit)
@@ -37,15 +37,22 @@ void ASOUBaseCharacter::BeginPlay()
 
     check(HealthComponent);
     check(HealthTextComponent);
+    check(GetCharacterMovement());
+
+    OnHealthChanged(HealthComponent->GetHealth());
+    HealthComponent->OnDeath.AddUObject(this, &ASOUBaseCharacter::OnDeath);
+    HealthComponent->OnHealthChanged.AddUObject(this, &ASOUBaseCharacter::OnHealthChanged);
+}
+
+void ASOUBaseCharacter::OnHealthChanged(float Health)
+{
+    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 }
 
 // Called every frame
 void ASOUBaseCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-
-    const auto Health = HealthComponent->GetHealth();
-    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 }
 
 // Called to bind functionality to input
@@ -107,4 +114,13 @@ float ASOUBaseCharacter::GetMovementDirection() const
     const auto CrossProduct = FVector::CrossProduct(GetActorForwardVector(), VelocityNormal);
     const auto Degrees = FMath::RadiansToDegrees(AngleBetween);
     return CrossProduct.IsZero() ? Degrees : Degrees * FMath::Sign(CrossProduct.Z);
+}
+
+void ASOUBaseCharacter::OnDeath()
+{
+    UE_LOG(LogBaseCharacter, Display, TEXT("Player %s is dead"), *GetName());
+    PlayAnimMontage(DeathAnimMontage);
+
+    GetCharacterMovement()->DisableMovement();
+    SetLifeSpan(5.0f);
 }
