@@ -7,6 +7,7 @@
 #include "Components/SOUCharacterMovementComponent.h"
 #include "Components/SOUHealthComponent.h"
 #include "Components/TextRenderComponent.h"
+#include "GameFramework/Controller.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseCharacter, All, All);
 
@@ -123,4 +124,8 @@ void ASOUBaseCharacter::OnDeath()
 
     GetCharacterMovement()->DisableMovement();
     SetLifeSpan(5.0f);
+    if (Controller)
+    {
+        Controller->ChangeState(NAME_Spectating);
+    }
 }
