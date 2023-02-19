@@ -62,6 +62,7 @@ void ASOUBaseCharacter::Tick(float DeltaTime)
 void ASOUBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
+    check(PlayerInputComponent);
 
     PlayerInputComponent->BindAxis("MoveForward", this, &ASOUBaseCharacter::MoveForward);
     PlayerInputComponent->BindAxis("MoveRight", this, &ASOUBaseCharacter::MoveRight);
@@ -122,10 +123,10 @@ float ASOUBaseCharacter::GetMovementDirection() const
 void ASOUBaseCharacter::OnDeath()
 {
     UE_LOG(LogBaseCharacter, Display, TEXT("Player %s is dead"), *GetName());
+    
     PlayAnimMontage(DeathAnimMontage);
-
     GetCharacterMovement()->DisableMovement();
-    SetLifeSpan(5.0f);
+    SetLifeSpan(LifeSpanOnDeath);
     if (Controller)
     {
         Controller->ChangeState(NAME_Spectating);
@@ -134,12 +135,10 @@ void ASOUBaseCharacter::OnDeath()
 
 void ASOUBaseCharacter::OnGroundLanded(const FHitResult& Hit)
 {
-    const auto FallVelocityZ = -GetCharacterMovement()->Velocity.Z;
-    UE_LOG(LogBaseCharacter, Display, TEXT("On landed: %f"), FallVelocityZ);
-
+    const auto FallVelocityZ = -GetVelocity().Z;
+    
     if(FallVelocityZ < LandedDamageVelocity.X) return;
 
     const auto FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, FallVelocityZ);
-    UE_LOG(LogBaseCharacter, Display, TEXT("FinalDamage: %f"), FinalDamage);
     TakeDamage(FinalDamage, FDamageEvent(), nullptr, nullptr);
 }

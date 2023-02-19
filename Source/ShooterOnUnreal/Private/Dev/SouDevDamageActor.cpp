@@ -1,11 +1,11 @@
 // ShooterOnUnreal Game. All Rights Reserved.
 
-#include "Dev/SouDevDamageActor.h"
+#include "Dev/SOUDevDamageActor.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
-ASouDevDamageActor::ASouDevDamageActor()
+ASOUDevDamageActor::ASOUDevDamageActor()
 {
     // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
@@ -15,13 +15,13 @@ ASouDevDamageActor::ASouDevDamageActor()
 }
 
 // Called when the game starts or when spawned
-void ASouDevDamageActor::BeginPlay()
+void ASOUDevDamageActor::BeginPlay()
 {
     Super::BeginPlay();
 }
 
 // Called every frame
-void ASouDevDamageActor::Tick(float DeltaTime)
+void ASOUDevDamageActor::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 

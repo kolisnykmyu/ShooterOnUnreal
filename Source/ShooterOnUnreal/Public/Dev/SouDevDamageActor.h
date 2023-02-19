@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "SouDevDamageActor.generated.h"
+#include "SOUDevDamageActor.generated.h"
 
 UCLASS()
-class SHOOTERONUNREAL_API ASouDevDamageActor : public AActor
+class SHOOTERONUNREAL_API ASOUDevDamageActor : public AActor
 {
     GENERATED_BODY()
 
 public:
     // Sets default values for this actor's properties
-    ASouDevDamageActor();
+    ASOUDevDamageActor();
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
     USceneComponent* SceneComponent;
