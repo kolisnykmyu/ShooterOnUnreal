@@ -17,7 +17,8 @@ public class ShooterOnUnreal : ModuleRules
         "ShooterOnUnreal/Public/Player",
         "ShooterOnUnreal/Public/Components",
         "ShooterOnUnreal/Public/Dev",
-        "ShooterOnUnreal/Public/Weapon"
+        "ShooterOnUnreal/Public/Weapon",
+        "ShooterOnUnreal/Public/UI"
       });
 
     // Uncomment if you are using Slate UI
