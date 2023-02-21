@@ -8,6 +8,7 @@
 #include "Components/SOUHealthComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "GameFramework/Controller.h"
+#include "Weapon/SOUBaseWeapon.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseCharacter, All, All);
 
@@ -45,6 +46,8 @@ void ASOUBaseCharacter::BeginPlay()
     HealthComponent->OnHealthChanged.AddUObject(this, &ASOUBaseCharacter::OnHealthChanged);
 
     LandedDelegate.AddDynamic(this, &ASOUBaseCharacter::OnGroundLanded);
+
+    SpawnWeapon();
 }
 
 void ASOUBaseCharacter::OnHealthChanged(float Health)
@@ -123,7 +126,7 @@ float ASOUBaseCharacter::GetMovementDirection() const
 void ASOUBaseCharacter::OnDeath()
 {
     UE_LOG(LogBaseCharacter, Display, TEXT("Player %s is dead"), *GetName());
-    
+
     PlayAnimMontage(DeathAnimMontage);
     GetCharacterMovement()->DisableMovement();
     SetLifeSpan(LifeSpanOnDeath);
@@ -136,9 +139,22 @@ void ASOUBaseCharacter::OnDeath()
 void ASOUBaseCharacter::OnGroundLanded(const FHitResult& Hit)
 {
     const auto FallVelocityZ = -GetVelocity().Z;
-    
-    if(FallVelocityZ < LandedDamageVelocity.X) return;
+
+    if (FallVelocityZ < LandedDamageVelocity.X)
+        return;
 
     const auto FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, FallVelocityZ);
     TakeDamage(FinalDamage, FDamageEvent(), nullptr, nullptr);
+}
+
+void ASOUBaseCharacter::SpawnWeapon()
+{
+    if (!GetWorld())
+        return;
+    const auto Weapon = GetWorld()->SpawnActor<ASOUBaseWeapon>(WeaponClass);
+    if (Weapon)
+    {
+        FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
+        Weapon->AttachToComponent(GetMesh(), AttachmentRules, "WeaponSocket");
+    }
 }
