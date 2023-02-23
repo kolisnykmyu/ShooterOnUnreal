@@ -7,8 +7,8 @@
 #include "Components/SOUCharacterMovementComponent.h"
 #include "Components/SOUHealthComponent.h"
 #include "Components/TextRenderComponent.h"
+#include "Components/SOUWeaponComponent.h"
 #include "GameFramework/Controller.h"
-#include "Weapon/SOUBaseWeapon.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseCharacter, All, All);
 
@@ -32,6 +32,8 @@ ASOUBaseCharacter::ASOUBaseCharacter(const FObjectInitializer& ObjectInit)
     HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
     HealthTextComponent->SetupAttachment(GetRootComponent());
     HealthTextComponent->SetOwnerNoSee(true);
+
+    WeaponComponent = CreateDefaultSubobject<USOUWeaponComponent>("WeaponComponent");
 }
 
 // Called when the game starts or when spawned
@@ -48,8 +50,6 @@ void ASOUBaseCharacter::BeginPlay()
     HealthComponent->OnHealthChanged.AddUObject(this, &ASOUBaseCharacter::OnHealthChanged);
 
     LandedDelegate.AddDynamic(this, &ASOUBaseCharacter::OnGroundLanded);
-
-    SpawnWeapon();
 }
 
 void ASOUBaseCharacter::OnHealthChanged(float Health)
@@ -68,6 +68,7 @@ void ASOUBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
     check(PlayerInputComponent);
+    check(WeaponComponent);
 
     PlayerInputComponent->BindAxis("MoveForward", this, &ASOUBaseCharacter::MoveForward);
     PlayerInputComponent->BindAxis("MoveRight", this, &ASOUBaseCharacter::MoveRight);
@@ -76,6 +77,7 @@ void ASOUBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
     PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASOUBaseCharacter::Jump);
     PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ASOUBaseCharacter::OnStartRunning);
     PlayerInputComponent->BindAction("Run", IE_Released, this, &ASOUBaseCharacter::OnStopRunning);
+    PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &USOUWeaponComponent::Fire);
 }
 
 void ASOUBaseCharacter::MoveForward(float Amount)
@@ -142,21 +144,8 @@ void ASOUBaseCharacter::OnGroundLanded(const FHitResult& Hit)
 {
     const auto FallVelocityZ = -GetVelocity().Z;
 
-    if (FallVelocityZ < LandedDamageVelocity.X)
-        return;
+    if (FallVelocityZ < LandedDamageVelocity.X) return;
 
     const auto FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, FallVelocityZ);
     TakeDamage(FinalDamage, FDamageEvent(), nullptr, nullptr);
-}
-
-void ASOUBaseCharacter::SpawnWeapon()
-{
-    if (!GetWorld())
-        return;
-    const auto Weapon = GetWorld()->SpawnActor<ASOUBaseWeapon>(WeaponClass);
-    if (Weapon)
-    {
-        FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
-        Weapon->AttachToComponent(GetMesh(), AttachmentRules, "WeaponSocket");
-    }
 }

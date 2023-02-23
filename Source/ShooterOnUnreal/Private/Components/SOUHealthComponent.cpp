@@ -29,8 +29,7 @@ void USOUHealthComponent::BeginPlay()
 void USOUHealthComponent::OnTakeDamage(
     AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
-    if (Damage <= 0.0f || IsDead() || !GetWorld())
-        return;
+    if (Damage <= 0.0f || IsDead() || !GetWorld()) return;
     SetHealth(Health - Damage);
     OnHealthChanged.Broadcast(Health);
 
@@ -49,8 +48,8 @@ void USOUHealthComponent::OnTakeDamage(
 void USOUHealthComponent::HealUpdate()
 {
     SetHealth(Health + HealModifier);
-    
-    if( FMath::IsNearlyEqual(Health, MaxHealth) && GetWorld())
+
+    if (FMath::IsNearlyEqual(Health, MaxHealth) && GetWorld())
     {
         GetWorld()->GetTimerManager().ClearTimer(HealTimerHandle);
     }

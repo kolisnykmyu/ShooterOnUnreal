@@ -16,6 +16,8 @@ class SHOOTERONUNREAL_API ASOUBaseWeapon : public AActor
 public:
     ASOUBaseWeapon();
 
+    virtual void Fire();
+
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     USkeletalMeshComponent* WeaponMesh;

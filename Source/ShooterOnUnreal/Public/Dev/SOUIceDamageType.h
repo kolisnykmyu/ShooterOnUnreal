@@ -7,11 +7,10 @@
 #include "SOUIceDamageType.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class SHOOTERONUNREAL_API USOUIceDamageType : public UDamageType
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
 };

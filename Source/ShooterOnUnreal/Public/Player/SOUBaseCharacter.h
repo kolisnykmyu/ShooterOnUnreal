@@ -10,7 +10,7 @@ class UCameraComponent;
 class USpringArmComponent;
 class USOUHealthComponent;
 class UTextRenderComponent;
-class ASOUBaseWeapon;
+class USOUWeaponComponent;
 
 UCLASS()
 class SHOOTERONUNREAL_API ASOUBaseCharacter : public ACharacter
@@ -34,6 +34,9 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UTextRenderComponent* HealthTextComponent;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    USOUWeaponComponent* WeaponComponent;
+
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     UAnimMontage* DeathAnimMontage;
 
@@ -45,9 +48,6 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, Category = "Damage")
     FVector2D LandedDamage = FVector2D(10.0f, 100.0f);
-
-    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-    TSubclassOf<ASOUBaseWeapon> WeaponClass;
 
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
@@ -80,6 +80,4 @@ private:
 
     UFUNCTION()
     void OnGroundLanded(const FHitResult& Hit);
-
-    void SpawnWeapon();
 };
